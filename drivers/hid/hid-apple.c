@@ -52,11 +52,6 @@ MODULE_PARM_DESC(swap_opt_cmd, "Swap the Option (\"Alt\") and Command (\"Flag\")
 		"(For people who want to keep Windows PC keyboard muscle memory. "
 		"[0] = as-is, Mac layout. 1 = swapped, Windows layout.)");
 
-static unsigned int f13_14_15_as_sysrq = 1;
-module_param(f13_14_15_as_sysrq, uint, 0644);
-MODULE_PARM_DESC(f13_14_15_as_sysrq, "Use the F13, F14, F15 key as the SysRQ key. "
-		"(0 = disabled, [1] = enabled)");
-
 struct apple_sc {
 	unsigned long quirks;
 	unsigned int fn_on;
@@ -94,7 +89,6 @@ static const struct apple_key_translation macbookair_fn_keys[] = {
 static const struct apple_key_translation apple_fn_keys[] = {
 	{ KEY_BACKSPACE, KEY_DELETE },
 	{ KEY_ENTER,	KEY_INSERT },
-#if 0
 	{ KEY_F1,	KEY_BRIGHTNESSDOWN, APPLE_FLAG_FKEY },
 	{ KEY_F2,	KEY_BRIGHTNESSUP,   APPLE_FLAG_FKEY },
 	{ KEY_F3,	KEY_SCALE,          APPLE_FLAG_FKEY },
@@ -104,7 +98,6 @@ static const struct apple_key_translation apple_fn_keys[] = {
 	{ KEY_F7,	KEY_PREVIOUSSONG,   APPLE_FLAG_FKEY },
 	{ KEY_F8,	KEY_PLAYPAUSE,      APPLE_FLAG_FKEY },
 	{ KEY_F9,	KEY_NEXTSONG,       APPLE_FLAG_FKEY },
-#endif
 	{ KEY_F10,	KEY_MUTE,           APPLE_FLAG_FKEY },
 	{ KEY_F11,	KEY_VOLUMEDOWN,     APPLE_FLAG_FKEY },
 	{ KEY_F12,	KEY_VOLUMEUP,       APPLE_FLAG_FKEY },
@@ -171,14 +164,7 @@ static const struct apple_key_translation swapped_option_cmd_keys[] = {
 	{ }
 };
 
-static const struct apple_key_translation f13_14_15_sysrq_keys[] = {
-	{ KEY_F13,	KEY_SYSRQ },
-	{ KEY_F14,	KEY_SYSRQ },
-	{ KEY_F15,	KEY_SYSRQ },
-	{ }
-};
-
-static const inline struct apple_key_translation *apple_find_translation(
+static const struct apple_key_translation *apple_find_translation(
 		const struct apple_key_translation *table, u16 from)
 {
 	const struct apple_key_translation *trans;
@@ -191,7 +177,7 @@ static const inline struct apple_key_translation *apple_find_translation(
 	return NULL;
 }
 
-static inline int hidinput_apple_event(struct hid_device *hid, struct input_dev *input,
+static int hidinput_apple_event(struct hid_device *hid, struct input_dev *input,
 		struct hid_usage *usage, __s32 value)
 {
 	struct apple_sc *asc = hid_get_drvdata(hid);
@@ -272,14 +258,6 @@ static inline int hidinput_apple_event(struct hid_device *hid, struct input_dev 
 
 	if (swap_opt_cmd) {
 		trans = apple_find_translation(swapped_option_cmd_keys, usage->code);
-		if (trans) {
-			input_event(input, usage->type, trans->to, value);
-			return 1;
-		}
-	}
-
-	if (f13_14_15_as_sysrq) {
-		trans = apple_find_translation(f13_14_15_sysrq_keys, usage->code);
 		if (trans) {
 			input_event(input, usage->type, trans->to, value);
 			return 1;
