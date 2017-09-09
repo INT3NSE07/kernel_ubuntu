@@ -1,8 +1,8 @@
 VERSION = 4
 PATCHLEVEL = 12
-SUBLEVEL = 10
+SUBLEVEL = 11
 EXTRAVERSION = -INT3NSE
-NAME = Tin Olives
+NAME = Fearless Coyote
 
 # *DOCUMENTATION*
 # To see a list of typical targets execute "make help"
