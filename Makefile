@@ -348,8 +348,8 @@ include scripts/Kbuild.include
 # Make variables (CC, etc...)
 AS		= $(CROSS_COMPILE)as
 LD		= $(CROSS_COMPILE)ld.bfd
-CC		= $(CROSS_COMPILE)gcc
-CPP		= $(CC) -E
+CC		= ccache $(CROSS_COMPILE)gcc
+CPP		= ccache $(CC) -E
 AR		= $(CROSS_COMPILE)ar
 NM		= $(CROSS_COMPILE)nm
 STRIP		= $(CROSS_COMPILE)strip
